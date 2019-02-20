@@ -34,7 +34,7 @@ fn pascal_row(py: Python, n: usize) -> PyObject {
 
 <br/><br/>
 ```python
-from pomodule.backend import pascal_row
+>>> from pomodule.backend import pascal_row
 >>> from pomodule.backend import pascal_row
 >>> for r in range(1, 8):
 ...     rowstr = ', '.join(map(str, pascal_row(r)))

@@ -6,8 +6,8 @@ use std::os::raw::{c_ulonglong};
 
 type size_t = c_ulonglong;
 
-fn pascal_row_impl(n: usize) -> vec<u32> {
-    let mut row : vec<u32> = vec::with_capacity(n);
+fn pascal_row_impl(n: usize) -> Vec<u32> {
+    let mut row : Vec<u32> = Vec::with_capacity(n);
     row.resize(n, 0);       // allocate an array of 0s
     row[0] = 1;
 
