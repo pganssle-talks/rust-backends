@@ -1,4 +1,4 @@
-<h1 style="font-size: 3em">Build your Backend with Rust</h1>
+<h1 style="font-size: 3em">Build your Python Backend with Rust</h1>
 <br/>
 <br/>
 <span style="font-size: 2.5em">

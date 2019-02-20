@@ -31,6 +31,12 @@ def pascal_row(n):
          1, 6, 15, 20, 15, 6, 1
  ```
 
+Notes:
+
+Here is a simple program for generating Pascal's Triangle in Python, row-by-row,
+in a list that is updated in place. As you can see, the code is pretty simple,
+and when I print out the rows it does the right thing.
+
 --
 
 # C API
@@ -62,12 +68,9 @@ static PyObject* pascal_row(PyObject* self, PyObject* n_rows) {
     }
 
     // Convert to Python list
-    PyObject* rv = PyList_New(n);
-    if (rv == NULL) {
-        goto cleanup;
-    }
+    PyObject* rv = PyList_New(n), *obj = NULL;
+    if (rv == NULL) { goto cleanup; }
 
-    PyObject * obj = NULL;
     for (size_t i = 0; i < n; ++i) {
         if ((obj = PyLong_FromLong(row[i])) == NULL || // int -> Py int
                 PyList_SetItem(rv, i, obj)) {          // rv[i] = obj

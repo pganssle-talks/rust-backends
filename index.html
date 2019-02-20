@@ -43,7 +43,7 @@
 				
 				<section data-markdown data-separator="^\n---\n$" data-separator-vertical="^\n--\n$" data-notes="^Note:">
 					<script type="text/template">
-						<h1 style="font-size: 3em">Build your Backend with Rust</h1>
+						<h1 style="font-size: 3em">Build your Python Backend with Rust</h1>
 <br/>
 <br/>
 <span style="font-size: 2.5em">
@@ -128,6 +128,12 @@ def pascal_row(n):
          1, 6, 15, 20, 15, 6, 1
  ```
 
+Notes:
+
+Here is a simple program for generating Pascal's Triangle in Python, row-by-row,
+in a list that is updated in place. As you can see, the code is pretty simple,
+and when I print out the rows it does the right thing.
+
 --
 
 # C API
@@ -159,12 +165,9 @@ static PyObject* pascal_row(PyObject* self, PyObject* n_rows) {
     }
 
     // Convert to Python list
-    PyObject* rv = PyList_New(n);
-    if (rv == NULL) {
-        goto cleanup;
-    }
+    PyObject* rv = PyList_New(n), *obj = NULL;
+    if (rv == NULL) { goto cleanup; }
 
-    PyObject * obj = NULL;
     for (size_t i = 0; i < n; ++i) {
         if ((obj = PyLong_FromLong(row[i])) == NULL || // int -> Py int
                 PyList_SetItem(rv, i, obj)) {          // rv[i] = obj
@@ -504,55 +507,6 @@ ValueError: year 0 is out of range
 ```
 <!-- .element: class="fragment" -->
 
---
-
-# PyO3: Making a class
-
-```rust
-use pyo3::prelude::*;
-
-#[pyclass]
-struct Point {
-    x: i32,
-    y: i32,
-}
-
-
-#[pymethods]
-impl Point {
-    #[new]
-    fn __new__(obj: &PyRawObject, x: i32, y: i32) -> PyResult<()> {
-        obj.init(|| Point { x: x, y: y })
-    }
-
-    fn norm(&self, py: Python<'_>) -> f64 {
-        ((self.x as f64).powf(2.) + (self.y as f64).powf(2.)).sqrt()
-    }
-}
-```
-
-<br/>
-```rust
-#[pymodule]
-fn classy(_py: Python, m: &PyModule) -> PyResult<()> {
-    m.add_class::<Point>()?;
-
-    Ok(())
-}
-```
-<!-- .element: class="fragment" -->
-<br>
-
-```python
->>> from pomodule.classy import Point
->>> p = Point(3, 4)
->>> p
-<Point object at 0x7f4a27c18270>
->>> Point(3, 4).norm()
-5.0
-```
-<!-- .element: class="fragment" -->
-
 
 					</script>
 				</section>
@@ -642,55 +596,6 @@ In [6]: %timeit milksnake_back.pascal_row(1000)
 493 µs ± 3.34 µs per loop (mean ± std. dev. of 7 runs, 1000 loops each)
 ```
 
---
-
-# FFI vs. API
-
-### FFI
-
-<div style="display:flex">
-<div style="width: 50%">
-<h4>Pros</h4>
-<ul>
-    <li> More portable interface </li>
-    <li> Smaller rust dependency </li>
-    <li> Faster in PyPy and for certain types of interface </li>
-</ul>
-</div><div style="width: 50%">
-<h4>Cons</h4>
-<ul>
-<li> Runtime dependency on `milksnake` and `cffi` </li>
-<li> No support for Python-specific types (e.g. `datetime`, `list`, `tuple`) </li>
-<li> May require memory management in Python </li>
-<li> Interface is designed in unsafe Rust </li>
-</ul>
-</div>
-</div>
-
-<br>
-<br>
-### API
-<div style="display:flex">
-<div style="width: 50%">
-<h4>Pros</h4>
-<ul>
-    <li> Safe wrappers written for most of the API </li>
-    <li> No runtime dependencies </li>
-    <li> Can work directly with Python containers and objects </li>
-    <li> Can easily call Python functions from Rust </li>
-    <li> Manages the GIL and reference counts for you </li>
-</ul>
-</div><div style="width: 50%">
-<h4>Cons</h4>
-<ul>
-    <li> PyO3's API is still quite unstable </li>
-    <li> Requires nightly rust </li>
-    <li> Needs significant speed updates </li>
-    <li> Still quite buggy </li>
-</ul>
-</div>
-</div>
-
 
 					</script>
 				</section>
@@ -752,6 +657,55 @@ In [4]: %timeit cy_ext.pascal_row(1000)
      alt="A person choosing between two apples"
      style="max-height: 750px;"
      />
+
+--
+
+# FFI vs. API
+
+### FFI
+
+<div style="display:flex">
+<div style="width: 50%">
+<h4>Pros</h4>
+<ul>
+    <li> More portable interface </li>
+    <li> Smaller rust dependency </li>
+    <li> Faster in PyPy and for certain types of interface </li>
+</ul>
+</div><div style="width: 50%">
+<h4>Cons</h4>
+<ul>
+<li> Runtime dependency on `milksnake` and `cffi` </li>
+<li> No support for Python-specific types (e.g. `datetime`, `list`, `tuple`) </li>
+<li> May require memory management in Python </li>
+<li> Interface is designed in unsafe Rust </li>
+</ul>
+</div>
+</div>
+
+<br>
+<br>
+### API
+<div style="display:flex">
+<div style="width: 50%">
+<h4>Pros</h4>
+<ul>
+    <li> Safe wrappers written for most of the API </li>
+    <li> No runtime dependencies </li>
+    <li> Can work directly with Python containers and objects </li>
+    <li> Can easily call Python functions from Rust </li>
+    <li> Manages the GIL and reference counts for you </li>
+</ul>
+</div><div style="width: 50%">
+<h4>Cons</h4>
+<ul>
+    <li> PyO3's API is still quite unstable </li>
+    <li> Requires nightly rust </li>
+    <li> Needs significant speed updates </li>
+    <li> Still quite buggy </li>
+</ul>
+</div>
+</div>
 
 
 					</script>
