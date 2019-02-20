@@ -54,3 +54,52 @@ In [4]: %timeit cy_ext.pascal_row(1000)
      style="max-height: 750px;"
      />
 
+--
+
+# FFI vs. API
+
+### FFI
+
+<div style="display:flex">
+<div style="width: 50%">
+<h4>Pros</h4>
+<ul>
+    <li> More portable interface </li>
+    <li> Smaller rust dependency </li>
+    <li> Faster in PyPy and for certain types of interface </li>
+</ul>
+</div><div style="width: 50%">
+<h4>Cons</h4>
+<ul>
+<li> Runtime dependency on `milksnake` and `cffi` </li>
+<li> No support for Python-specific types (e.g. `datetime`, `list`, `tuple`) </li>
+<li> May require memory management in Python </li>
+<li> Interface is designed in unsafe Rust </li>
+</ul>
+</div>
+</div>
+
+<br>
+<br>
+### API
+<div style="display:flex">
+<div style="width: 50%">
+<h4>Pros</h4>
+<ul>
+    <li> Safe wrappers written for most of the API </li>
+    <li> No runtime dependencies </li>
+    <li> Can work directly with Python containers and objects </li>
+    <li> Can easily call Python functions from Rust </li>
+    <li> Manages the GIL and reference counts for you </li>
+</ul>
+</div><div style="width: 50%">
+<h4>Cons</h4>
+<ul>
+    <li> PyO3's API is still quite unstable </li>
+    <li> Requires nightly rust </li>
+    <li> Needs significant speed updates </li>
+    <li> Still quite buggy </li>
+</ul>
+</div>
+</div>
+
