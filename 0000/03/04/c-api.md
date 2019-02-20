@@ -148,7 +148,7 @@ Out[4]: 136.58536585365852
 
 - Manual memory management
 - Manual reference counting (`Py_INCREF`, `Py_DECREF`)
-- No memory safety:
+- No memory safety
 
 ```C
     for (size_t i = 2; i <= n; ++i) {
